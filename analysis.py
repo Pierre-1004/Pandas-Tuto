@@ -52,7 +52,7 @@ print(max_crime_by_city)
 ####################################################""""""""""""""""""""""""""""""""
 
 #Génération de visualisation
-test_which_max_crime.plot(kind='hist', subplots =True)
+#test_which_max_crime.plot(kind='hist', subplots =True)
 #plt.show()
 
 #########################################################################################
@@ -74,8 +74,7 @@ moyenne = df['MURDER'].mean(skipna =True)
 
 #########################################################################################
 #Optimisation des performances
-
-dataframe = pd.read_excel('Crime_Data.xlsx', dtype={'JURISDICTION' : str, 'MUERDER' : int})
+#dataframe = pd.read_excel('Crime_Data.xlsx', dtype={'JURISDICTION' : str, 'MUERDER' : int})
 
 
 #Utilisation de .loc pour un acccès par étiquette
@@ -86,3 +85,44 @@ print(valeur)
 
 valeur = df.iloc[5,1]
 print(valeur)
+
+# Avoir accès à un seul élément d'un DataFrame
+valeur = df.at[5,'YEAR']
+print(valeur)
+
+# Utimisation d'un bon index pour améliorer les performances
+#Si l'index est un entier continu alors :
+#data = pd.read_excel('crime_Data.xlsx', index_col = pd.RangeIndex(start=0, stop = 100000))
+
+###########################################################################################
+#Nettoyage de données
+df_sans_doublons = df.drop_duplicates()
+
+#Remplacer des valeurs spécifiques
+data2 = df.replace({'YEAR': {1980 : 1981, 1981 : 1982}})
+
+# Fréquence des valeurs dans une colonne
+frequence = df['YEAR'].value_counts()
+#print(frequence)
+
+# Création d'un tableau croisé dynamique
+
+tableau_croise= pd.pivot_table(df, values ='ROBBERY', index='JURISDICTION', columns ='YEAR', aggfunc='sum')
+#print(tableau_croise)
+
+
+########################################################################################
+#Preparation des données pour l'apprentissage automatique
+
+from sklearn.model_selection import train_test_split
+from sklear.preprocessing import StandartScaler
+
+#Normaliser les données
+scaler = StandartScaler()
+dataframe_normalise = scaler.fit.transform(df)
+
+#encoder les variables catégorielles
+dataframe_encodage =pd.get_dummiers(df,columns =['JURISDICTION'])
+
+#Séparer les ensembles d'entrainements et de test
+X_train, X_test, y_tran, y_test = train_test_split(X,y,test_size= 0.2, random_state =42)
